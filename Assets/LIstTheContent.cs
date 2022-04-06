@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json;
 using UnityEngine.Networking;
+using System;
 
 public class LIstTheContent : MonoBehaviour
 {
@@ -21,6 +23,7 @@ public class LIstTheContent : MonoBehaviour
     }
     IEnumerator GetRequest()
     {
+
         string uri = "https://bit.ly/3iSheyg";
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
@@ -44,7 +47,16 @@ public class LIstTheContent : MonoBehaviour
                     Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
                     break;
             }
+
+            CreateList(webRequest.downloadHandler.text);
         }
+    }
+
+    private void CreateList(string jsonString)
+    {
+        Root theContent = new Root();
+        Newtonsoft.Json.JsonConvert.PopulateObject(jsonString, theContent);
+        print(theContent.results[0].id);
     }
 }
 // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
